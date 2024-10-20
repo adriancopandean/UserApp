@@ -30,7 +30,7 @@ public class ExceptionAdviceHandler {
     return new ResponseEntity<>(CustomErrorResponse.builder()
             .description("email address is already used by another user")
             .property("email")
-            .errorCode("101").build(), HttpStatus.METHOD_NOT_ALLOWED);
+            .errorCode("101").build(), HttpStatus.CONFLICT);
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)

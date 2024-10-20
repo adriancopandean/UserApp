@@ -1,6 +1,7 @@
 package UserApp;
 
 import UserApp.api.request.RegisterRequest;
+import UserApp.api.response.SuccessfulRegisterResponse;
 import UserApp.exceptions.DuplicatedEmailException;
 import UserApp.model.AppUser;
 import UserApp.repository.UserRepository;
@@ -45,7 +46,7 @@ public class AppController {
   }
 
   @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AppUser> register(@Valid @RequestBody RegisterRequest request) {
+  public ResponseEntity<SuccessfulRegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
     log.info("POST /register: {}", request);
 
     Optional<AppUser> user = Optional.ofNullable(userRepository.findByEmail(request.getEmail()));
@@ -58,7 +59,10 @@ public class AppController {
     appUser.setUsername(request.getUsername());
     appUser.setEmail(request.getEmail());
     userRepository.save(appUser);
-    return new ResponseEntity<>(userRepository.findByEmail(request.getEmail()), HttpStatus.OK);
+    return new ResponseEntity<>(SuccessfulRegisterResponse.builder()
+            .username(userRepository.findByEmail(request.getEmail()).getUsername())
+            .email(request.getEmail())
+            .message("Successfully registered").build(), HttpStatus.OK);
   }
 
   @GetMapping("/users")
