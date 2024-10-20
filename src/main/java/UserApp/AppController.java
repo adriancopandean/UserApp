@@ -3,6 +3,7 @@ package UserApp;
 import UserApp.api.request.RegisterRequest;
 import UserApp.api.response.SuccessfulRegisterResponse;
 import UserApp.exceptions.DuplicatedEmailException;
+import UserApp.exceptions.DuplicatedUsernameException;
 import UserApp.model.AppUser;
 import UserApp.repository.UserRepository;
 import UserApp.util.Greeting;
@@ -49,9 +50,14 @@ public class AppController {
   public ResponseEntity<SuccessfulRegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
     log.info("POST /register: {}", request);
 
-    Optional<AppUser> user = Optional.ofNullable(userRepository.findByEmail(request.getEmail()));
-    if (user.isPresent()) {
+    Optional<AppUser> entity = Optional.ofNullable(userRepository.findByEmail(request.getEmail()));
+    if (entity.isPresent()) {
       throw new DuplicatedEmailException("already exists");
+    }
+
+    Optional<AppUser> entity2 = Optional.ofNullable(userRepository.findByUsername(request.getUsername()));
+    if (entity2.isPresent()) {
+      throw new DuplicatedUsernameException("already exists");
     }
 
     AppUser appUser = new AppUser();

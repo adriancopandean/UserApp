@@ -4,6 +4,7 @@ import UserApp.api.ResponseCode;
 import UserApp.api.response.CustomErrorResponse;
 import UserApp.api.response.ValidationErrorResponse;
 import UserApp.exceptions.DuplicatedEmailException;
+import UserApp.exceptions.DuplicatedUsernameException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +25,20 @@ import static UserApp.api.ResponseCode.Constants.MISSING_MANDATORY_FIELD;
 @Slf4j
 public class ExceptionAdviceHandler {
 
-  @ExceptionHandler(Exception.class)
+  @ExceptionHandler(DuplicatedEmailException.class)
   public ResponseEntity<CustomErrorResponse> handleDuplicatedEmailException(DuplicatedEmailException d) {
     log.info("a user with this email already exists: {}", d.getMessage());
     return new ResponseEntity<>(CustomErrorResponse.builder()
             .description("email address is already used by another user")
+            .property("email")
+            .errorCode("101").build(), HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler(DuplicatedUsernameException.class)
+  public ResponseEntity<CustomErrorResponse> handleDuplicatedUsernameException(DuplicatedUsernameException d) {
+    log.info("a user with this username already exists: {}", d.getMessage());
+    return new ResponseEntity<>(CustomErrorResponse.builder()
+            .description("username is already used by another user")
             .property("email")
             .errorCode("101").build(), HttpStatus.CONFLICT);
   }
