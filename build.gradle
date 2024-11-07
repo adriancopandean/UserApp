@@ -37,6 +37,12 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+	testImplementation group: 'io.cucumber', name: 'cucumber-java', version: '7.19.0'
+	testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: '7.19.0'
+	testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.4.0'
+	testImplementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.23.1'
+
+
 }
 
 tasks.named('test') {
